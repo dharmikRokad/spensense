@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../transactions/domain/entities/transaction_entity.dart';
@@ -113,9 +114,7 @@ class DashboardPage extends ConsumerWidget {
                       style: theme.textTheme.titleMedium,
                     ),
                     TextButton(
-                      onPressed: () {
-                        // Navigate to transactions tab
-                      },
+                      onPressed: () => context.go('/transactions'),
                       child: Text(
                         'See All',
                         style: theme.textTheme.labelMedium?.copyWith(
@@ -173,9 +172,7 @@ class DashboardPage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Open Add Transaction
-        },
+        onPressed: () => context.push('/transactions/add'),
         child: const Icon(Icons.add_rounded, size: 28),
       ),
     );
@@ -267,73 +264,76 @@ class _TransactionRow extends StatelessWidget {
     final theme = Theme.of(context);
     final isExpense = transaction.type == TransactionType.debit;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: colors.border),
-      ),
-      child: Row(
-        children: [
-          // Category Icon
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: colors.surface2,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                transaction.category.emoji,
-                style: const TextStyle(fontSize: 20),
+    return InkWell(
+      onTap: () => context.push('/transactions/edit/${transaction.id}'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: colors.border),
+        ),
+        child: Row(
+          children: [
+            // Category Icon
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: colors.surface2,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  transaction.category.emoji,
+                  style: const TextStyle(fontSize: 20),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 14),
+            const SizedBox(width: 14),
 
-          // Merchant & Category
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            // Merchant & Category
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    transaction.merchant,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium?.copyWith(fontSize: 14),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    transaction.category.displayName,
+                    style: theme.textTheme.labelMedium,
+                  ),
+                ],
+              ),
+            ),
+
+            // Amount
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  transaction.merchant,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(fontSize: 14),
+                  '${isExpense ? '−' : '+'}${NumberFormat.currency(symbol: '₹', decimalDigits: 0).format(transaction.amount)}',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: isExpense ? colors.red : colors.accent,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  transaction.category.displayName,
-                  style: theme.textTheme.labelMedium,
+                  DateFormat('MMM dd').format(transaction.date),
+                  style: theme.textTheme.labelMedium?.copyWith(fontSize: 10),
                 ),
               ],
             ),
-          ),
-
-          // Amount
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${isExpense ? '−' : '+'}${NumberFormat.currency(symbol: '₹', decimalDigits: 0).format(transaction.amount)}',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: isExpense ? colors.red : colors.accent,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                DateFormat('MMM dd').format(transaction.date),
-                style: theme.textTheme.labelMedium?.copyWith(fontSize: 10),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
