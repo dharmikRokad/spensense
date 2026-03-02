@@ -97,7 +97,7 @@ class SettingsPage extends ConsumerWidget {
               value: themeMode == ThemeMode.dark,
               onChanged: (_) => ref.read(themeModeProvider.notifier).toggle(),
               activeTrackColor: colors.accentSoft,
-              activeColor: colors.accent,
+              activeThumbColor: colors.accent,
             ),
             colors: colors,
           ),

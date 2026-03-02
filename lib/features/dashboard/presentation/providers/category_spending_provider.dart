@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../transactions/domain/entities/transaction_entity.dart';
+import '../../../../core/providers/core_providers.dart';
+import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../transactions/domain/entities/transaction_enums.dart';
-import 'dashboard_providers.dart';
 
 class CategorySpending {
   final TransactionCategory category;
@@ -19,7 +19,6 @@ class CategorySpending {
 final categorySpendingProvider = Provider<AsyncValue<List<CategorySpending>>>((
   ref,
 ) {
-  final dashboardSummaryAsync = ref.watch(dashboardSummaryProvider);
   final user = ref.watch(currentUserProvider);
 
   if (user == null) return const AsyncValue.data([]);

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../transactions/domain/entities/transaction_entity.dart';
 import '../../../transactions/domain/entities/transaction_enums.dart';
+import '../providers/category_spending_provider.dart';
 import '../providers/dashboard_providers.dart';
 
 class DashboardPage extends ConsumerWidget {
@@ -99,6 +101,14 @@ class DashboardPage extends ConsumerWidget {
                   ),
                   error: (_, _) => const SizedBox.shrink(),
                 ),
+              ),
+            ),
+
+            // ─── Category Breakdown Chart ───────────────────────────
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: _CategoryBreakdownChart(),
               ),
             ),
 
@@ -378,6 +388,135 @@ class _EmptyTransactionsView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CategoryBreakdownChart extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final spendingAsync = ref.watch(categorySpendingProvider);
+    final theme = Theme.of(context);
+    final colors = theme.extension<AppColors>()!;
+
+    return spendingAsync.when(
+      data: (spending) {
+        if (spending.isEmpty) return const SizedBox.shrink();
+
+        // Take top 5 for the donut, rest in "Others"
+        final top5 = spending.take(5).toList();
+        final others = spending
+            .skip(5)
+            .fold(0.0, (sum, item) => sum + item.amount);
+
+        if (others > 0) {
+          top5.add(
+            CategorySpending(
+              category: TransactionCategory.other,
+              amount: others,
+              percentage: 0, // Not strictly needed for logic here
+            ),
+          );
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: colors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: colors.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Spending Breakdown',
+                style: theme.textTheme.titleMedium?.copyWith(fontSize: 14),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  SizedBox(
+                    height: 140,
+                    width: 140,
+                    child: PieChart(
+                      PieChartData(
+                        sectionsSpace: 4,
+                        centerSpaceRadius: 40,
+                        sections: top5.map((s) {
+                          return PieChartSectionData(
+                            color: s.category.color,
+                            value: s.amount,
+                            title: '',
+                            radius: 18,
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: Column(
+                      children: top5
+                          .map((s) => _LegendItem(spending: s, colors: colors))
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const _LoadingPlaceholder(height: 180),
+      error: (_, _) => const SizedBox.shrink(),
+    );
+  }
+}
+
+class _LegendItem extends StatelessWidget {
+  final CategorySpending spending;
+  final AppColors colors;
+
+  const _LegendItem({required this.spending, required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: spending.category.color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              spending.category.displayName,
+              style: theme.textTheme.labelMedium?.copyWith(fontSize: 11),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(
+            NumberFormat.compactCurrency(
+              symbol: '₹',
+              decimalDigits: 0,
+            ).format(spending.amount),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: colors.textSub,
+              fontWeight: FontWeight.w700,
+              fontSize: 11,
+            ),
+          ),
+        ],
       ),
     );
   }
