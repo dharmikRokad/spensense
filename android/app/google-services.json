@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "359092986946",
+    "project_id": "expensewise-f8tcn",
+    "storage_bucket": "expensewise-f8tcn.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359092986946:android:6ee7caed525ffdeafa39db",
+        "android_client_info": {
+          "package_name": "com.dahrmik.expense_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359092986946-i5k831fii5tvk60a5tqtmkk27d4lvhpc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dahrmik.expense_tracker",
+            "certificate_hash": "d421917e76adcb6c92ad47b0cccc6cb660a8d045"
+          }
+        },
+        {
+          "client_id": "359092986946-e8k9baqlpbsamivmckrj86emd5juun9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGEcMiY6JSDkhwt_qQ2ioJWivByZoMVcU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359092986946-e8k9baqlpbsamivmckrj86emd5juun9j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
