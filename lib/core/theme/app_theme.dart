@@ -4,229 +4,264 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   AppTheme._();
 
-  static const _primaryColor = Color(0xFF6C63FF);
-  static const _accentColor = Color(0xFF03DAC6);
-  static const _errorColor = Color(0xFFCF6679);
-  static const _successColor = Color(0xFF4CAF50);
-
-  static const _darkBg = Color(0xFF0D0D1A);
-  static const _darkSurface = Color(0xFF1A1A2E);
-  static const _darkCard = Color(0xFF16213E);
-
-  static const creditColor = Color(0xFF4ADE80);
-  static const debitColor = Color(0xFFF87171);
-
-  static ThemeData get darkTheme {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: _darkBg,
-      colorScheme: const ColorScheme.dark(
-        primary: _primaryColor,
-        secondary: _accentColor,
-        error: _errorColor,
-        surface: _darkSurface,
-      ),
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-      cardTheme: CardThemeData(
-        color: _darkCard,
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: _darkBg,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: GoogleFonts.inter(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: _primaryColor,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: _darkCard,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFF2A2A4A)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: _primaryColor, width: 2),
-        ),
-        labelStyle: const TextStyle(color: Colors.white60),
-        hintStyle: const TextStyle(color: Colors.white38),
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: _darkSurface,
-        selectedItemColor: _primaryColor,
-        unselectedItemColor: Colors.white38,
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
-      ),
-      extensions: const [
-        AppColors(
-          credit: creditColor,
-          debit: debitColor,
-          success: _successColor,
-          gradient1: _primaryColor,
-          gradient2: _accentColor,
-          cardBg: _darkCard,
-          surfaceBg: _darkSurface,
-        ),
-      ],
-    );
-  }
+  // Color Palette from Design Guide
+  static const Color bg = Color(0xFFF7F8FA);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surface2 = Color(0xFFF0F2F5);
+  static const Color border = Color(0xFFE4E7ED);
+  static const Color accent = Color(0xFF1DB954);
+  static const Color accentSoft = Color(0xFFE8F8EE);
+  static const Color red = Color(0xFFEF4444);
+  static const Color redSoft = Color(0xFFFEF2F2);
+  static const Color blue = Color(0xFF3B82F6);
+  static const Color blueSoft = Color(0xFFEFF6FF);
+  static const Color amber = Color(0xFFF59E0B);
+  static const Color amberSoft = Color(0xFFFFFBEB);
+  static const Color textBody = Color(0xFF111827);
+  static const Color textSub = Color(0xFF6B7280);
+  static const Color textDim = Color(0xFF9CA3AF);
 
   static ThemeData get lightTheme {
-    const lightBg = Color(0xFFF5F5FF);
-    const lightSurface = Color(0xFFFFFFFF);
-    const lightCard = Color(0xFFF0F0FF);
+    final base = ThemeData.light(useMaterial3: true);
+    final textTheme = GoogleFonts.plusJakartaSansTextTheme(base.textTheme)
+        .copyWith(
+          displayLarge: GoogleFonts.plusJakartaSans(
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            color: textBody,
+            letterSpacing: -0.5,
+          ),
+          headlineMedium: GoogleFonts.plusJakartaSans(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: textBody,
+          ),
+          titleMedium: GoogleFonts.plusJakartaSans(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: textBody,
+          ),
+          bodyLarge: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: textBody,
+          ),
+          bodyMedium: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: textBody,
+          ),
+          labelMedium: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            color: textSub,
+          ),
+        );
 
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.light,
-      scaffoldBackgroundColor: lightBg,
-      colorScheme: const ColorScheme.light(
-        primary: _primaryColor,
-        secondary: _accentColor,
-        error: _errorColor,
-        surface: lightSurface,
+    return base.copyWith(
+      scaffoldBackgroundColor: bg,
+      colorScheme: ColorScheme.light(
+        primary: accent,
+        secondary: blue,
+        surface: surface,
+        error: red,
+        onSurface: textBody,
+        onPrimary: Colors.white,
       ),
-      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
+      textTheme: textTheme,
+      dividerTheme: const DividerThemeData(
+        color: border,
+        space: 1,
+        thickness: 1,
+      ),
       cardTheme: CardThemeData(
-        color: lightSurface,
-        elevation: 2,
-        shadowColor: Colors.black12,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: border),
+        ),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: lightSurface,
+        backgroundColor: surface,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: GoogleFonts.inter(
-          color: Colors.black87,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-        iconTheme: const IconThemeData(color: Colors.black87),
+        titleTextStyle: textTheme.headlineMedium,
+        iconTheme: const IconThemeData(color: textBody),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: _primaryColor,
+          backgroundColor: accent,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: textTheme.titleMedium,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: lightCard,
+        fillColor: surface,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: border, width: 1.5),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFDDDDFF)),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: border, width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: _primaryColor, width: 2),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: accent, width: 1.5),
         ),
+        labelStyle: textTheme.labelMedium,
+        hintStyle: textTheme.bodyLarge?.copyWith(color: textDim),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: surface,
+        elevation: 0,
+        selectedItemColor: accent,
+        unselectedItemColor: textDim,
+        selectedLabelStyle: textTheme.labelMedium?.copyWith(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: accent,
+        ),
+        unselectedLabelStyle: textTheme.labelMedium?.copyWith(fontSize: 10),
+        type: BottomNavigationBarType.fixed,
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: accent,
+        foregroundColor: Colors.white,
+        elevation: 2,
+        sizeConstraints: BoxConstraints.tightFor(width: 52, height: 52),
+        shape: CircleBorder(),
       ),
       extensions: const [
         AppColors(
-          credit: creditColor,
-          debit: debitColor,
-          success: _successColor,
-          gradient1: _primaryColor,
-          gradient2: _accentColor,
-          cardBg: lightCard,
-          surfaceBg: lightSurface,
+          bg: bg,
+          surface: surface,
+          surface2: surface2,
+          border: border,
+          accent: accent,
+          accentSoft: accentSoft,
+          red: red,
+          redSoft: redSoft,
+          blue: blue,
+          blueSoft: blueSoft,
+          amber: amber,
+          amberSoft: amberSoft,
+          text: textBody,
+          textSub: textSub,
+          textDim: textDim,
         ),
       ],
     );
   }
+
+  // Dark theme as secondary
+  static ThemeData get darkTheme =>
+      lightTheme.copyWith(brightness: Brightness.dark);
 }
 
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
-  final Color credit;
-  final Color debit;
-  final Color success;
-  final Color gradient1;
-  final Color gradient2;
-  final Color cardBg;
-  final Color surfaceBg;
+  final Color bg;
+  final Color surface;
+  final Color surface2;
+  final Color border;
+  final Color accent;
+  final Color accentSoft;
+  final Color red;
+  final Color redSoft;
+  final Color blue;
+  final Color blueSoft;
+  final Color amber;
+  final Color amberSoft;
+  final Color text;
+  final Color textSub;
+  final Color textDim;
 
   const AppColors({
-    required this.credit,
-    required this.debit,
-    required this.success,
-    required this.gradient1,
-    required this.gradient2,
-    required this.cardBg,
-    required this.surfaceBg,
+    required this.bg,
+    required this.surface,
+    required this.surface2,
+    required this.border,
+    required this.accent,
+    required this.accentSoft,
+    required this.red,
+    required this.redSoft,
+    required this.blue,
+    required this.blueSoft,
+    required this.amber,
+    required this.amberSoft,
+    required this.text,
+    required this.textSub,
+    required this.textDim,
   });
 
   @override
   AppColors copyWith({
-    Color? credit,
-    Color? debit,
-    Color? success,
-    Color? gradient1,
-    Color? gradient2,
-    Color? cardBg,
-    Color? surfaceBg,
+    Color? bg,
+    Color? surface,
+    Color? surface2,
+    Color? border,
+    Color? accent,
+    Color? accentSoft,
+    Color? red,
+    Color? redSoft,
+    Color? blue,
+    Color? blueSoft,
+    Color? amber,
+    Color? amberSoft,
+    Color? text,
+    Color? textSub,
+    Color? textDim,
   }) {
     return AppColors(
-      credit: credit ?? this.credit,
-      debit: debit ?? this.debit,
-      success: success ?? this.success,
-      gradient1: gradient1 ?? this.gradient1,
-      gradient2: gradient2 ?? this.gradient2,
-      cardBg: cardBg ?? this.cardBg,
-      surfaceBg: surfaceBg ?? this.surfaceBg,
+      bg: bg ?? this.bg,
+      surface: surface ?? this.surface,
+      surface2: surface2 ?? this.surface2,
+      border: border ?? this.border,
+      accent: accent ?? this.accent,
+      accentSoft: accentSoft ?? this.accentSoft,
+      red: red ?? this.red,
+      redSoft: redSoft ?? this.redSoft,
+      blue: blue ?? this.blue,
+      blueSoft: blueSoft ?? this.blueSoft,
+      amber: amber ?? this.amber,
+      amberSoft: amberSoft ?? this.amberSoft,
+      text: text ?? this.text,
+      textSub: textSub ?? this.textSub,
+      textDim: textDim ?? this.textDim,
     );
   }
 
   @override
-  AppColors lerp(AppColors? other, double t) {
+  AppColors lerp(ThemeExtension<AppColors>? other, double t) {
     if (other is! AppColors) return this;
     return AppColors(
-      credit: Color.lerp(credit, other.credit, t)!,
-      debit: Color.lerp(debit, other.debit, t)!,
-      success: Color.lerp(success, other.success, t)!,
-      gradient1: Color.lerp(gradient1, other.gradient1, t)!,
-      gradient2: Color.lerp(gradient2, other.gradient2, t)!,
-      cardBg: Color.lerp(cardBg, other.cardBg, t)!,
-      surfaceBg: Color.lerp(surfaceBg, other.surfaceBg, t)!,
+      bg: Color.lerp(bg, other.bg, t)!,
+      surface: Color.lerp(surface, other.surface, t)!,
+      surface2: Color.lerp(surface2, other.surface2, t)!,
+      border: Color.lerp(border, other.border, t)!,
+      accent: Color.lerp(accent, other.accent, t)!,
+      accentSoft: Color.lerp(accentSoft, other.accentSoft, t)!,
+      red: Color.lerp(red, other.red, t)!,
+      redSoft: Color.lerp(redSoft, other.redSoft, t)!,
+      blue: Color.lerp(blue, other.blue, t)!,
+      blueSoft: Color.lerp(blueSoft, other.blueSoft, t)!,
+      amber: Color.lerp(amber, other.amber, t)!,
+      amberSoft: Color.lerp(amberSoft, other.amberSoft, t)!,
+      text: Color.lerp(text, other.text, t)!,
+      textSub: Color.lerp(textSub, other.textSub, t)!,
+      textDim: Color.lerp(textDim, other.textDim, t)!,
     );
   }
 }
