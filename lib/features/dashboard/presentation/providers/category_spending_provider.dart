@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/providers/core_providers.dart';
-import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../../../transactions/domain/entities/transaction_enums.dart';
+import '../providers/dashboard_providers.dart';
 
 class CategorySpending {
   final TransactionCategory category;
@@ -16,21 +15,13 @@ class CategorySpending {
 }
 
 /// Computes category-wise spending breakdown for the current month.
+/// Reuses [_dashboardTransactionsProvider] to avoid creating a second stream.
 final categorySpendingProvider = Provider<AsyncValue<List<CategorySpending>>>((
   ref,
 ) {
-  final user = ref.watch(currentUserProvider);
-
-  if (user == null) return const AsyncValue.data([]);
-
-  // We need the full list of transactions for the current month to group by category
-  final transactionsStream = ref
-      .watch(watchTransactionsUseCaseProvider)
-      .call(user.uid);
-
-  return ref.watch(StreamProvider((_) => transactionsStream)).whenData((
-    transactions,
-  ) {
+  // Re-use the same underlying stream that the dashboard already watches —
+  // no need for a separate Firestore listener.
+  return ref.watch(dashboardTransactionsProvider).whenData((transactions) {
     final now = DateTime.now();
     final firstDayOfMonth = DateTime(now.year, now.month, 1);
 
