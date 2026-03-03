@@ -45,6 +45,9 @@ class _AddEditTransactionPageState
         .read(getTransactionsUseCaseProvider)
         .call(userId: user.uid);
 
+    // Guard: widget may have been disposed while awaiting the network call.
+    if (!mounted) return;
+
     result.fold(
       (failure) => ScaffoldMessenger.of(
         context,
@@ -61,7 +64,7 @@ class _AddEditTransactionPageState
         });
       },
     );
-    setState(() => _isLoading = false);
+    if (mounted) setState(() => _isLoading = false);
   }
 
   void _onNumberPressed(String value) {
@@ -121,13 +124,16 @@ class _AddEditTransactionPageState
         ? await ref.read(saveTransactionUseCaseProvider).call(transaction)
         : await ref.read(updateTransactionUseCaseProvider).call(transaction);
 
+    // Guard: widget may have been disposed while the save was in progress.
+    if (!mounted) return;
+
     result.fold(
       (failure) => ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(failure.message))),
       (_) => context.pop(),
     );
-    setState(() => _isLoading = false);
+    if (mounted) setState(() => _isLoading = false);
   }
 
   @override
