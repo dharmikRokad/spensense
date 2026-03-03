@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/core_providers.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../features/auth/domain/entities/user_entity.dart';
 import '../../../features/auth/presentation/pages/login_page.dart';
 import '../../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../../features/transactions/presentation/pages/transactions_page.dart';
@@ -14,15 +13,15 @@ import '../../../features/onboarding/presentation/pages/splash_screen.dart';
 import '../../../features/onboarding/presentation/providers/onboarding_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authStream = ref.watch(authRepositoryProvider).authStateChanges;
-  final onboardingCompleted = ref.watch(onboardingProvider);
-  final notifier = _AuthChangeNotifier(authStream);
+  final notifier = _RouterNotifier(ref);
 
   return GoRouter(
     initialLocation: '/splash',
     refreshListenable: notifier,
     redirect: (context, state) {
       final isLoggedIn = notifier.isLoggedIn;
+      final onboardingCompleted = notifier.onboardingCompleted;
+
       final isSplashRoute = state.matchedLocation == '/splash';
       final isOnboardingRoute = state.matchedLocation == '/onboarding';
       final isLoginRoute = state.matchedLocation == '/login';
@@ -37,8 +36,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 3. Auth redirects
       if (!isLoggedIn && !isLoginRoute && !isOnboardingRoute) return '/login';
-      if (isLoggedIn && (isLoginRoute || isOnboardingRoute))
+      if (isLoggedIn && (isLoginRoute || isOnboardingRoute)) {
         return '/dashboard';
+      }
 
       return null;
     },
@@ -94,17 +94,35 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-class _AuthChangeNotifier extends ChangeNotifier {
+class _RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
   bool _isLoggedIn = false;
+  bool _onboardingCompleted = false;
 
-  _AuthChangeNotifier(Stream<UserEntity?> stream) {
-    stream.listen((user) {
-      _isLoggedIn = user != null;
-      notifyListeners();
+  _RouterNotifier(this._ref) {
+    // Listen to onboarding changes
+    _ref.listen<bool>(onboardingProvider, (prev, next) {
+      if (_onboardingCompleted != next) {
+        _onboardingCompleted = next;
+        notifyListeners();
+      }
     });
+
+    // Listen to auth changes via stream
+    _ref.read(authRepositoryProvider).authStateChanges.listen((user) {
+      final loggedIn = user != null;
+      if (_isLoggedIn != loggedIn) {
+        _isLoggedIn = loggedIn;
+        notifyListeners();
+      }
+    });
+
+    // Initialize
+    _onboardingCompleted = _ref.read(onboardingProvider);
   }
 
   bool get isLoggedIn => _isLoggedIn;
+  bool get onboardingCompleted => _onboardingCompleted;
 }
 
 class MainShell extends StatelessWidget {
