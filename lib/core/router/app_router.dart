@@ -9,23 +9,50 @@ import '../../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../../features/transactions/presentation/pages/transactions_page.dart';
 import '../../../features/transactions/presentation/pages/add_edit_transaction_page.dart';
 import '../../../features/settings/presentation/pages/settings_page.dart';
+import '../../../features/onboarding/presentation/pages/onboarding_page.dart';
+import '../../../features/onboarding/presentation/pages/splash_screen.dart';
+import '../../../features/onboarding/presentation/providers/onboarding_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authStream = ref.watch(authRepositoryProvider).authStateChanges;
+  final onboardingCompleted = ref.watch(onboardingProvider);
   final notifier = _AuthChangeNotifier(authStream);
 
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/splash',
     refreshListenable: notifier,
     redirect: (context, state) {
       final isLoggedIn = notifier.isLoggedIn;
+      final isSplashRoute = state.matchedLocation == '/splash';
+      final isOnboardingRoute = state.matchedLocation == '/onboarding';
       final isLoginRoute = state.matchedLocation == '/login';
 
-      if (!isLoggedIn && !isLoginRoute) return '/login';
-      if (isLoggedIn && isLoginRoute) return '/dashboard';
+      // 1. If we are on Splash, let it handle its own delay and manual navigation
+      if (isSplashRoute) return null;
+
+      // 2. If onboarding not completed, go to onboarding (unless already there)
+      if (!onboardingCompleted) {
+        return isOnboardingRoute ? null : '/onboarding';
+      }
+
+      // 3. Auth redirects
+      if (!isLoggedIn && !isLoginRoute && !isOnboardingRoute) return '/login';
+      if (isLoggedIn && (isLoginRoute || isOnboardingRoute))
+        return '/dashboard';
+
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/splash',
+        name: 'splash',
+        builder: (ctx, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        name: 'onboarding',
+        builder: (ctx, state) => const OnboardingPage(),
+      ),
       GoRoute(
         path: '/login',
         name: 'login',
